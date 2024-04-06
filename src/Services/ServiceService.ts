@@ -1,6 +1,10 @@
 import axios from "axios";
 import { URL_BACK } from "./StrudentService";
-    
-export const createService = (service:any)=> axios(URL_BACK+"/service/add",service) 
+import ServiceType from "../Models/ServiceType";
 
-export const getAllServices = () => axios(URL_BACK+"/service/all")
+// Enable sending cookies for cross-origin requests
+axios.defaults.withCredentials = true;
+
+export const createService = (service:ServiceType) => axios.post(URL_BACK + "/service/add", service);
+
+export const getAllServices = () => axios.get(URL_BACK + "/service/all");

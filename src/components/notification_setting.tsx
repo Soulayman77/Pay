@@ -1,9 +1,40 @@
-import React from "react";
-import {IonRow, IonCol}from "@ionic/react";
+import React, { useEffect, useState } from "react";
+import { IonRow, IonCol } from "@ionic/react";
 import './dashboard/dashboard.css';
+import { getUser } from "../Services/StrudentService";
 
-function Notification_setting(){
-    let user={firstName:"Rachid",lastName:"TAIB", role:"Admin"};
+function Notification_setting() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const userData = await getUser();
+        setUser(userData); // Update state after successful fetch
+        setLoading(false);
+        console.log(userData)
+        console.log(userData.data.firstName); // Now logs data after state update
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+    
     return(
         <div>
             <IonRow>
@@ -19,9 +50,13 @@ function Notification_setting(){
                     </svg>
                 </IonCol>
                 <IonCol>
-                    <p>{user.firstName} {user.lastName.charAt(0)}.</p>
-                    <p className="subTitle">{user.role}</p>
-                </IonCol>
+          {user && (
+            <>
+              <p>{user.data.firstName} {user.data.lastName}</p>
+              <p className="subTitle">{user.data.role}</p>
+            </>
+          )}
+        </IonCol>
                 <IonCol>
                 <img src="https://img.freepik.com/free-photo/bohemian-man-with-his-arms-crossed_1368-3542.jpg?w=740&t=st=1702236437~exp=1702237037~hmac=44b4655423a2cb3bb4fa6f54d3828c164cc373a3d35fec1ad38416641b45421c" alt="logo" />
 

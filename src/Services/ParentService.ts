@@ -1,6 +1,10 @@
 import axios from "axios";
 import { URL_BACK } from "./StrudentService";
+import ParentType from "../Models/parentType";
 
-export const getParent =(id:string) => axios(URL_BACK+"/parent/"+id)
-export const createParent = (parent:any) => axios(URL_BACK+"/parent/add",parent)
-export const getAllParent = () => axios(URL_BACK+"/parent/all")
+// Enable sending cookies for cross-origin requests
+axios.defaults.withCredentials = true;
+
+export const getParent = (id:number) => axios.get(URL_BACK + "/parent/" + id);
+export const createParent = (parent:ParentType) => axios.post(URL_BACK + "/parent/add", parent);
+export const getAllParent = () => axios.get(URL_BACK + "/parent/all");

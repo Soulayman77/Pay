@@ -28,6 +28,7 @@ function Login() {
     try {
       const response = await axios.post(`${URL_BACK}/login`, credentials, {
         headers: { 'Content-Type': 'application/json' },
+        withCredentials: true, // Enable sending cookies
       });
 
       console.log('Login successful:', response.data);
