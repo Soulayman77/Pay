@@ -7,7 +7,7 @@ import "./payments.css"
 import { useEffect, useState } from "react";
 import StudentType from "../../../Models/studentType";
 import { getStudentsByParentId } from "../../../Services/StrudentService";
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 interface Payment{
   id:number;
@@ -44,9 +44,6 @@ function Payments(){
     })
   },[]);
 
-  useEffect(()=>{
-    setSelectedPayment(toPay.filter(payment => payment.type === 'OBLIGATORY'));
-  },[toPay])
 
   useEffect(() => {
     updatePrice();
@@ -55,30 +52,50 @@ function Payments(){
     }
   }, [selectedPayment]);
 
-  useEffect(()=>{
-    const id=0;
-    students.map(student =>
-      student.etatServices.map(etatService => {
-        if(etatService.payer === false){
-          let startDate=etatService.dateInscription
-          toPay.push({childName:student.firstName,
-          dateBegin:startDate,
-          dateEnd:startDate,//.setMonth(startDate.getMonth() + etatService.service.pereodicity),
-          name:etatService.service.name,
-          price:etatService.service.price,
-          type:etatService.service.type,
-          id:id+1})
-          
-        }
-  })
-    )
-  },[students])
+
+  useEffect(() => {
+    const id = 0;
+    students.forEach(student =>
+        student.etatServices.forEach(etatService => {
+            if (etatService.payer === false) {
+                let startDate = etatService.dateInscription;
+                const newObj = {
+                    childName: student.firstName,
+                    dateBegin: startDate,
+                    dateEnd: startDate,
+                    name: etatService.service.name,
+                    price: etatService.service.price,
+                    type: etatService.service.type,
+                    id: id + 1
+                };
+                const exists = toPay.some(payment =>
+                    payment.childName === newObj.childName &&
+                    payment.dateBegin === newObj.dateBegin &&
+                    payment.dateEnd === newObj.dateEnd &&
+                    payment.name === newObj.name &&
+                    payment.price === newObj.price &&
+                    payment.type === newObj.type &&
+                    payment.id === newObj.id
+                );
+
+                if (!exists) {
+                    toPay.push(newObj);
+                }
+            }
+        })
+    );
+
+    setSelectedPayment(toPay.filter(payment => payment.type === 'OBLIGATORY'));
+}, [students]);
+
+
 
     const selectAll=()=>{
       setallChecked(!allChecked);
       if(!allChecked){
        setSelectedPayment(toPay);
       }
+      
       else{
         setSelectedPayment(toPay.filter(payment => payment.type === 'OBLIGATORY'));
       }
@@ -86,7 +103,12 @@ function Payments(){
       
     }
    
-    
+    const history = useHistory();
+    const handleClick = () => {
+      
+        history.push(`/ERP_Project/pay/online/${prix}`);
+      
+    };
     
     return(
       <div className="bgroundpayment row">
@@ -116,6 +138,7 @@ function Payments(){
                           <IonCol>
                             <input type="checkbox"
                                 onChange={selectAll}
+                                disabled={toPay.every(p => p.type === "OBLIGATORY")}
                                 checked={allChecked}
                              /> All
                           </IonCol>
@@ -143,7 +166,7 @@ function Payments(){
                             />
                         
                         <div className="button-container mt-2">
-                            <IonButton href="/ERP_Project/pay/online" shape="round" className="text_1">
+                            <IonButton onClick={handleClick} shape="round" className="text_1">
                                 Pay
                             </IonButton>
                         </div>
