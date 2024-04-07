@@ -106,7 +106,7 @@ function NewService() {
     // console.log(requestOptions, "service data");
 
     if (validation()) {
-      createService(requestOptions)
+      createService(service)
         .then((res) => {
           console.log(res.data, "data in back");
           alert("Création terminée avec succès ");

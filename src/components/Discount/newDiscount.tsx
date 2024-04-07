@@ -68,7 +68,7 @@ function NewDiscount() {
     console.log(requestOptions,"request")
 
     if(validation()){
-      addDiscount(requestOptions).then((res)=>{
+      addDiscount(discount).then((res)=>{
         console.log(res.data);
         alert("Création terminée avec succès")
         setDateValidation("")

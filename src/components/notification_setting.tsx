@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { IonRow, IonCol } from "@ionic/react";
 import './dashboard/dashboard.css';
 import { getUser } from "../Services/StrudentService";
+import { useHistory } from "react-router";
 
 function Notification_setting() {
+    const history = useHistory();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +33,9 @@ function Notification_setting() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    history.push("/ERP_Project/login");
+    return <div>Error: {error.message}</div>;history.push("/login");
+
   }
 
     

@@ -73,7 +73,7 @@ function NewParent() {
         phone,
         dateInscription,
         address,
-        imageSrc,
+        /*imageSrc,*/
       };
 
       console.log(parent, "contenu parent");
@@ -89,7 +89,8 @@ function NewParent() {
         },
         data: jsonData,
       };
-      createParent(requestOptions)
+      ;console.log("here's the sent ",requestOptions, "as a body");
+      createParent(parent)
         .then((res) => {
           console.log(res.data, "data in bd");
           alert("Création terminée avec succès")
@@ -115,13 +116,14 @@ function NewParent() {
   //Validation
 
   interface ErrorType {
-    firstName1: string;
+    cin: string;
+    firstName: string;
     lastName: string;
     email: string;
     phone: string;
     dateInscription: string;
     address: string;
-    cin: string;
+    
   }
   const [error, setError] = useState<ErrorType>({
     firstName1: "",
@@ -187,138 +189,131 @@ function NewParent() {
   }
 
   return (
-    <div className="midle1 p-3">
-      <div className="formulaire">
-        <div className="newAccount">
-          <h5> New Parent</h5>
+<div className="midle1 p-3" style={{ overflowY: 'auto', maxHeight: '80vh' }}>
+  <div className="formulaire">
+    <div className="newAccount">
+      <h5> New Parent</h5>
+    </div>
+    <div className="mainf">
+      <div className="row">
+        <div className="col-md-6">
+          <div>
+            <IonLabel>First Name*</IonLabel>
+            <IonInput
+              className={`form-control ${
+                error.firstName1 ? "is-invalid" : ""
+              } `}
+              fill="outline"
+              type="text"
+              value={firstName}
+              onIonChange={handleChangeFisrt}
+              placeholder="your first name"
+            ></IonInput>
+            {error.firstName1 && (
+              <div className="invalid-feedback">{error.firstName1} </div>
+            )}
+          </div>
+          <div>
+            <IonLabel>Last Name*</IonLabel>
+            <IonInput
+              className={`form-control ${
+                error.lastName ? "is-invalid" : ""
+              } `}
+              placeholder="your last name"
+              fill="outline"
+              type="text"
+              value={lastName}
+              onIonChange={handleChangeLast}
+            ></IonInput>
+            {error.lastName && (
+              <div className="invalid-feedback">{error.lastName} </div>
+            )}
+          </div>
+          <div>
+            <IonLabel>cin*</IonLabel>
+            <IonInput
+              className={`form-control ${error.cin ? "is-invalid" : ""} `}
+              placeholder="AA111111"
+              fill="outline"
+              type="text"
+              value={cin}
+              onIonChange={handleChangecin}
+            ></IonInput>
+            {error.cin && (
+              <div className="invalid-feedback">{error.cin} </div>
+            )}
+          </div>
+          <div>
+            <IonLabel>Address*</IonLabel>
+            <IonInput
+              className={`form-control ${
+                error.address ? "is-invalid" : ""
+              } `}
+              placeholder="Your address"
+              fill="outline"
+              type="text"
+              value={address}
+              onIonChange={handleChangeAddress}
+            />
+            {error.address && (
+              <div className="invalid-feedback">{error.address} </div>
+            )}
+          </div>
         </div>
-        <div className="mainf">
-          <IonRow>
-            <div className="col-2 mx-2">
-              <g>photo</g>
-              {/* {imageSrc && (
-                <img src={imageSrc} alt="Selected" className="photo1" />
-              )} */}
-
-              {imageSrc && <img src={imageSrc} alt="Selected" />}
-              <input
-                type="file"
-                accept="image/*"
-                className="photo1"
-                onChange={handleImageChange}
-              />
-            </div>
-            <div className="col-5 mx-3">
-              <div>
-                <IonLabel>First Name*</IonLabel>
-                <IonInput
-                  className={`form-control ${
-                    error.firstName1 ? "is-invalid" : ""
-                  } `}
-                  fill="outline"
-                  type="text"
-                  value={firstName}
-                  onIonChange={handleChangeFisrt}
-                  placeholder="your first name"
-                ></IonInput>
-
-                {error.firstName1 && (
-                  <div className="invalid-feedback">{error.firstName1} </div>
-                )}
-              </div>
-              <div>
-                <IonLabel>Last Name*</IonLabel>
-                <IonInput
-                  className={`form-control ${
-                    error.lastName ? "is-invalid" : ""
-                  } `}
-                  placeholder="your last name"
-                  fill="outline"
-                  type="text"
-                  value={lastName}
-                  onIonChange={handleChangeLast}
-                ></IonInput>
-                {error.lastName && (
-                  <div className="invalid-feedback">{error.lastName} </div>
-                )}
-              </div>
-              <div>
-                <IonLabel>cin*</IonLabel>
-                <IonInput
-                  className={`form-control ${error.cin ? "is-invalid" : ""} `}
-                  placeholder="AA111111"
-                  fill="outline"
-                  type="text"
-                  value={cin}
-                  onIonChange={handleChangecin}
-                ></IonInput>
-                {error.cin && (
-                  <div className="invalid-feedback">{error.cin} </div>
-                )}
-              </div>
-              <div>
-                <IonLabel>Address*</IonLabel>
-                <IonInput
-                  className={`form-control ${
-                    error.address ? "is-invalid" : ""
-                  } `}
-                  placeholder="Your address"
-                  fill="outline"
-                  type="text"
-                  value={address}
-                  onIonChange={handleChangeAddress}
-                />
-                {error.address && (
-                  <div className="invalid-feedback">{error.address} </div>
-                )}
-              </div>
-            </div>
-            <div className="col-4 mx-3">
-              <IonLabel>Email*</IonLabel>
-              <IonInput
-                className={`form-control ${error.email ? "is-invalid" : ""} `}
-                fill="outline"
-                type="email"
-                value={email}
-                onIonChange={handleChangeEmail}
-              ></IonInput>
-              {error.email && (
-                <div className="invalid-feedback">{error.email} </div>
-              )}
-              <IonLabel>Phone*</IonLabel>
-              <IonInput
-                className={`form-control ${error.phone ? "is-invalid" : ""} `}
-                fill="outline"
-                type="tel"
-                value={phone}
-                onIonChange={handleChangePhone}
-              ></IonInput>
-              {error.phone && (
-                <div className="invalid-feedback">{error.phone} </div>
-              )}
-              <IonLabel>Date of Inscription</IonLabel>
-              <IonInput
-                className={`form-control ${
-                  error.dateInscription ? "is-invalid" : ""
-                } `}
-                fill="outline"
-                type="date"
-                value={dateInscription}
-                onIonChange={handleChangedateInscription}
-              ></IonInput>
-              {error.dateInscription && (
-                <div className="invalid-feedback">{error.dateInscription} </div>
-              )}
-            </div>
-            <div className="button-container mt-2">
-              <IonButton shape="round" className="text_1" onClick={saveParent}>
-                Save
-              </IonButton>
-            </div>
-          </IonRow>
+        <div className="col-md-6">
+          <div>
+            <IonLabel>Email*</IonLabel>
+            <IonInput
+              className={`form-control ${error.email ? "is-invalid" : ""} `}
+              fill="outline"
+              type="email"
+              value={email}
+              onIonChange={handleChangeEmail}
+            ></IonInput>
+            {error.email && (
+              <div className="invalid-feedback">{error.email} </div>
+            )}
+          </div>
+          <div>
+            <IonLabel>Phone*</IonLabel>
+            <IonInput
+              className={`form-control ${error.phone ? "is-invalid" : ""} `}
+              fill="outline"
+              type="tel"
+              value={phone}
+              onIonChange={handleChangePhone}
+            ></IonInput>
+            {error.phone && (
+              <div className="invalid-feedback">{error.phone} </div>
+            )}
+          </div>
+          <div>
+            <IonLabel>Date of Inscription</IonLabel>
+            <IonInput
+              className={`form-control ${
+                error.dateInscription ? "is-invalid" : ""
+              } `}
+              fill="outline"
+              type="date"
+              value={dateInscription}
+              onIonChange={handleChangedateInscription}
+            ></IonInput>
+            {error.dateInscription && (
+              <div className="invalid-feedback">{error.dateInscription} </div>
+            )}
+          </div>
         </div>
       </div>
+      <div className="button-container mt-2">
+        <IonButton shape="round" className="text_1" onClick={saveParent}>
+          Save
+        </IonButton>
+      </div>
     </div>
+  </div>
+</div>
+
+
   );
 }
 export default NewParent;

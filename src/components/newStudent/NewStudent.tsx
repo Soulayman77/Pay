@@ -93,6 +93,7 @@ function NewStudent() {
   function saveStudent(e: any) {
     if (validation()) {
     const student = {
+      id:0,
       firstName,
       lastName,
       address,
@@ -122,7 +123,7 @@ function NewStudent() {
           data: jsonData,
         };
         
-          createStudent(requestOptions)
+          createStudent(student)
             .then((res) => {
               // console.log(res.data,"data in bd")
               alert("Création terminée avec succès")

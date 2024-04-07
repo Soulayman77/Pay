@@ -7,10 +7,13 @@ import ListWithPagination from "../page/pages";
 import ServiceItem from "../service/ServiceItems/serviceItem";
 import { getAllServices } from "../../Services/ServiceService";
 import StudentType from "../../Models/studentType";
-import { getStudentById } from "../../Services/StrudentService";
+import { getStudentById, updateStudent } from "../../Services/StrudentService";
+import { useHistory } from "react-router";
+import { createServiceState } from "../../Services/ServiceStateService";
 
 
 function ServiceToStudent(){
+    const history = useHistory();
     const [allServices,setServices]=useState<ServiceType[]>([])
     const [toChoose,setToChoose]=useState<ServiceType[]>(allServices)
     const [allChecked, setallChecked] = useState(false);
@@ -20,26 +23,37 @@ function ServiceToStudent(){
     const [studentId, setStudentId] = useState<number>();
     const getQueryParams = () => {
       const searchParams = new URLSearchParams(window.location.search);
+      console.log("attempted to get params",searchParams.get('studentId'));
+      
       return searchParams.get('studentId');
     };
-    useEffect(()=>{
-      getAllServices().then((res) =>{
-        setServices(res.data)
-      })
+    useEffect(() => {
+      getAllServices().then((res) => {
+          setServices(res.data);
+          // Initialize isCheckedDictionary with false for all services
+          const initialCheckState: { [key: string]:boolean } = {};
+          res.data.forEach(service => {
+              initialCheckState[service.name] = false;
+          });
+          setIsCheckedDictionary(initialCheckState);
+      });
       const queryParamsValue = getQueryParams();
       if (queryParamsValue !== null) {
-        setStudentId(parseInt(queryParamsValue, 10));
+          setStudentId(parseInt(queryParamsValue, 10));
       }
-      getStudentById(studentId).then((rest)=>{
-        setCurrentStudent(rest.data);
-      })
-      console.log(studentId);
-    },[])
+  }, []);
+  useEffect(() => {
+      if (studentId !== undefined) {
+          getStudentById(studentId).then((rest) => {
+              setCurrentStudent(rest.data);
+          });
+      }
+  }, [studentId]);
 
   //khasss nhyd services lli deja assigner l student mn toChoose
 
     useEffect(()=>{
-      setToChoose(allServices.filter(s=>s.type==="OPTIONAL"));
+      setToChoose(allServices/*.filter(s=>s.type==="OBLIGATORY"  )*/);
     },[allServices])
 
     useEffect(() => {
@@ -90,7 +104,50 @@ function ServiceToStudent(){
             setallChecked(false);
           }
         };
-      
+        const handleOkButtonClick = () => {
+          if (currentStudent) {
+              const updatedStudent: StudentType = {
+                  ...currentStudent,
+                  etatServices: selectedService.map(service => ({
+                      id: 0, // Assuming the ID should be assigned by the backend
+                      dateInscription: new Date(), // You may need to change this according to your requirement
+                      payer: false,
+                      service: service
+                  }))
+                  
+              };
+              const serviceStates = selectedService.map(service => {
+                return createServiceState({
+                    id: 0, // Assuming the ID should be assigned by the backend
+                    dateInscription: new Date(), // You may need to change this according to your requirement
+                    payer: false,
+                    service: service,
+                    eleve: currentStudent
+                });
+            });
+    
+            // Handle success/failure of creating service states
+            Promise.all(serviceStates)
+                .then(() => {
+                    console.log("Service states created successfully.");
+                    history.push("/ERP_Project/students");
+                })
+                .catch(error => {
+                    console.error("Error creating service states:", error);
+                });
+              /*updateStudent(updatedStudent,studentId).then(() => {
+                  // Handle success
+                  console.log(updatedStudent);
+                  
+                  console.log("Services updated successfully.");
+                  history.push("/ERP_Project/students");
+              }).catch(error => {
+                  // Handle error
+                  console.error("Error updating services:", error);
+              });*/
+              
+          }
+      };
       return(
         <div className="bgroundpayment row">
           <SideMenu active_Row={"row_12"}/>
@@ -143,10 +200,10 @@ function ServiceToStudent(){
                               />
                           
                           <div className="button-container mt-2">
-                              <IonButton href="/ERP_Project/pay/online" shape="round" className="text_1">
-                                  ok
-                              </IonButton>
-                          </div>
+                                <IonButton onClick={handleOkButtonClick} shape="round" className="text_1">
+                                    ok
+                                </IonButton>
+                            </div>
                       </div>
                   </div>
   

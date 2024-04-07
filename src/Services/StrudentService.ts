@@ -6,6 +6,7 @@ axios.defaults.baseURL = "http://localhost:8090";
 export const  URL_STUDENT = URL_BACK+"/student";
 
 export const getStudents = () => axios.get('/student/all');
+export const updateStudent = (student:studentType, id:number) => axios.put(URL_STUDENT +"/eleveId/" +id, student);
 export const createStudent = (student:studentType) => axios.post(URL_STUDENT + "/add", student);
 export const getStudentsByParentId = (id:number) => axios.get(URL_STUDENT + "/parentid/" + id);
 export const deleteStudentById = (id:number) => axios.delete(URL_STUDENT + "/" + id);
